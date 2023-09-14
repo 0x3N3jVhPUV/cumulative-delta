@@ -1,0 +1,164 @@
+GOALS
+Expose a REST API which gives us the cumulative delta of a specific trading pair.
+Cumulative Delta Calculator is a tool that fetches trade histories for a specified trading pair from a specified exchange and calculates the cumulative delta from the trade histories. It provides a simple API to access trade data and perform calculations on the cumulative delta.
+
+SPECIFICATIONS
+Your mission, if you accept it, is to fetch the public trades history for a specific pair on the exchange Kucoin (https://openapi-sandbox.kucoin.com). Compute the cumulative delta index from the historical trades and return it.
+You have to take into consideration that you may add new exchanges later. So you'll need to create an API factory in case for other exchanges.
+In order to get the get the cumulative delta index (for a symbol), the symbols list or the fills list for a trade type, we should be able to fetch, for any exchanges, trade history for a symbol,  symbols list for a market and fills list for a trade type.
+
+Requirements
+- Use NodeJS and Typescript
+The delivered implementation should be battle-tested!
+You should rely on the exchange API for the integration (not a third party one) Using the programming language GOALS
+Expose a REST API which gives us the cumulative delta of a specific trading pair.
+Cumulative Delta Calculator is a tool that fetches trade histories for a specified trading pair from a specified exchange and calculates the cumulative delta from the trade histories. It provides a simple API to access trade data and perform calculations on the cumulative delta.
+
+SPECIFICATIONS
+Your mission, if you accept it, is to fetch the public trades history for a specific pair on the exchange Kucoin (https://openapi-sandbox.kucoin.com). Compute the cumulative delta index from the historical trades and return it.
+You have to take into consideration that you may add new exchanges later. So you'll need to create an API factory in case for other exchanges.
+In order to get the get the cumulative delta index (for a symbol), the symbols list or the fills list for a trade type, we should be able to fetch, for any exchanges, trade history for a symbol,  symbols list for a market and fills list for a trade type.
+
+Requirements
+- Use NodeJS and Typescript
+-Make sure that the kucoin-node-sdk.d.ts file is in your project 
+-Include the kucoin-node-sdk.d.ts file in your tsconfig.json file.directory.
+The delivered implementation should be battle-tested!
+You should rely on the exchange API for the integration (not a third party one).  if limit of characters it exceeds, stop! and continue to the next answer, never interrupt in the middle code box.
+
+## API Endpoints
+
+The following API endpoints are available:
+
+- **GET /exchange/:exchange/symbols**
+
+  Get a list of symbols available on the specified exchange.
+
+  Example: `GET /exchange/kucoin/symbols`
+
+- **GET /exchange/:exchange/trade-history/:symbol**
+
+  Get the trade history for the specified symbol on the specified exchange.
+
+  Example: `GET /exchange/kucoin/trade-history/BTC-USDT`
+
+- **GET /exchange/:exchange/cumulative-delta/:symbol**
+
+  Calculate the cumulative delta for the specified symbol on the specified exchange.
+
+  Example: `GET /exchange/kucoin/cumulative-delta/BTC-USDT`
+
+Replace `:exchange` with the name of the exchange (e.g., kucoin) and `:symbol` with the trading pair symbol (e.g., BTC-USDT) in the endpoint URLs.
+
+To accomplish the task described in your message, you would need to create a REST API using NodeJS and TypeScript. Here is a high-level outline of how you might structure your project and implement the required features:
+
+### Step 1: Setup Your NodeJS Project
+
+1. Initialize a new NodeJS project with TypeScript:
+   ```sh
+   npm init -y
+   npm install typescript @types/node --save-dev
+   npx tsc --init
+   ```
+
+2. Include the `kucoin-node-sdk.d.ts` file in your project directory and reference it in your `tsconfig.json` file:
+   ```json
+   {
+     "include": ["src/**/*", "kucoin-node-sdk.d.ts"]
+   }
+   ```
+
+### Step 2: Create API Factory
+
+Create an API factory that can easily integrate with other exchanges in the future. You might structure it something like this:
+
+```typescript
+interface ExchangeAPI {
+  getSymbols(): Promise<string[]>;
+  getTradeHistory(symbol: string): Promise<TradeHistory[]>;
+  getCumulativeDelta(symbol: string): Promise<number>;
+}
+
+class KucoinAPI implements ExchangeAPI {
+  // Implement the methods to interact with Kucoin API
+}
+
+class ExchangeAPIFactory {
+  static createExchangeAPI(exchange: string): ExchangeAPI {
+    switch (exchange) {
+      case 'kucoin':
+        return new KucoinAPI();
+      // Add cases for other exchanges as you integrate them
+      default:
+        throw new Error('Exchange not supported');
+    }
+  }
+}
+```
+
+### Step 3: Implement API Endpoints
+
+Using a framework like Express, implement the API endpoints as described:
+
+1. Install Express and its types:
+   ```sh
+   npm install express
+   npm install @types/express --save-dev
+   ```
+
+2. Implement the API endpoints:
+
+```typescript
+import express from 'express';
+
+const app = express();
+const port = 3000;
+
+app.get('/exchange/:exchange/symbols', async (req, res) => {
+  try {
+    const exchangeAPI = ExchangeAPIFactory.createExchangeAPI(req.params.exchange);
+    const symbols = await exchangeAPI.getSymbols();
+    res.json(symbols);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/exchange/:exchange/trade-history/:symbol', async (req, res) => {
+  try {
+    const exchangeAPI = ExchangeAPIFactory.createExchangeAPI(req.params.exchange);
+    const tradeHistory = await exchangeAPI.getTradeHistory(req.params.symbol);
+    res.json(tradeHistory);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/exchange/:exchange/cumulative-delta/:symbol', async (req, res) => {
+  try {
+    const exchangeAPI = ExchangeAPIFactory.createExchangeAPI(req.params.exchange);
+    const cumulativeDelta = await exchangeAPI.getCumulativeDelta(req.params.symbol);
+    res.json({ cumulativeDelta });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+```
+
+### Step 4: Implement Kucoin API Integration
+
+Implement the methods in the `KucoinAPI` class to interact with the Kucoin API. You would use the official Kucoin Node SDK to fetch data and perform calculations.
+
+### Step 5: Testing
+
+Ensure that your implementation is battle-tested by writing comprehensive unit and integration tests.
+
+### Step 6: Deployment
+
+Deploy your API to a production server.
+
+Remember, this is a high-level outline. You would need to implement the details, including error handling, request validation, and integration with the Kucoin API using the official SDK.

@@ -1,0 +1,7 @@
+try {
+  // some code that might throw an error
+} catch (error) {
+  if (error instanceof Error) {
+    // now you can use 'error' variable here
+  }
+}
