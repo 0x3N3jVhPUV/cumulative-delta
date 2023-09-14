@@ -1,92 +1,42 @@
-import { ExchangeAPI } from "../exchangeAPI";
-import { Trade } from "../../models/trade";
-import { TradeSymbol } from "../../models/tradeSymbol";
-import { Fill } from "../../models/fill";
-import * as Kucoin from "kucoin-node-sdk";
+import { IExchangeService, ITradeHistory, ISymbolDetails, IKucoinSymbolItem, IKucoinTradeHistoryItem } from '../../types/index';
+import * as API from 'kucoin-node-sdk';
+import config from './config';
 
-export class KucoinService implements ExchangeAPI {
-  constructor() {
-    // Load the configuration for Kucoin API
-    const config = require("./config");
-    Kucoin.init(config);
+API.init(config);
+
+export class KucoinService implements IExchangeService {
+  constructor() {}
+
+  async getSymbols(): Promise<ISymbolDetails[]> {
+    const response = await API.rest.Market.Symbols.getSymbolsList();
+    return response.data.map((item: IKucoinSymbolItem) => ({
+      symbol: item.symbol,
+      baseCurrency: item.baseCurrency,
+      quoteCurrency: item.quoteCurrency,
+      feeCurrency: item.feeCurrency,
+      market: item.market
+    }));
   }
 
-  async fetchTradeHistory(symbol: string): Promise<Trade[]> {
-    // Fetch trade history using Kucoin API
-    const response = await Kucoin.rest.Market.Histories.getMarketHistories(
-      symbol.toUpperCase()
-    );
-
-    // Handle error response
-    if (response.code !== "200000") {
-      throw new Error(`Failed to get trade history, code: ${response.code}`);
-    }
-
-    // Transform response data into Trade objects
-    const trades = response.data;
-    return trades.map((trade: Trade) => {
-      return new Trade(
-        trade.sequence,
-        trade.price,
-        trade.size,
-        trade.side,
-        trade.time
-      );
-    });
+  async getTradeHistory(symbol: string): Promise<ITradeHistory[]> {
+    const response = await API.rest.Trade.Orders.getRecentOrders({ symbol });
+    return response.data.items.map((item: IKucoinTradeHistoryItem) => ({
+      id: item.sequence,
+      timestamp: item.time,
+      price: parseFloat(item.price),
+      amount: parseFloat(item.size),
+      side: item.side,
+    }));
   }
 
-  async fetchSymbolsList(market?: string): Promise<TradeSymbol[]> {
-    // Fetch symbols list using Kucoin API
-    const response = await Kucoin.rest.Market.Symbols.getSymbolsList(market);
-
-    // Handle error response
-    if (response.code !== "200000") {
-      throw new Error(`Failed to get market symbols, code: ${response.code}`);
-    }
-
-    // Transform response data into TradeSymbol objects
-    const symbols = response.data;
-    return symbols.map((symbol: TradeSymbol) => {
-      return new TradeSymbol(
-        symbol.symbol,
-        symbol.name,
-        symbol.baseCurrency,
-        symbol.quoteCurrency
-      );
+  async getCumulativeDelta(symbol: string): Promise<number> {
+    const tradeHistory = await this.getTradeHistory(symbol);
+    
+    let cumulativeDelta = 0;
+    tradeHistory.forEach(trade => {
+      cumulativeDelta += trade.side === 'buy' ? trade.amount : -trade.amount;
     });
-  }
-
-  async fetchFillsList(tradeType: string): Promise<Fill[]> {
-    // Fetch fills list using Kucoin API
-    const response = await Kucoin.rest.Trade.Fills.getFillsList(tradeType);
-
-    // Handle error response
-    if (response.code !== "200000") {
-      throw new Error(`Failed to get fills list, code: ${response.code}`);
-    }
-
-    // Transform response data into Fill objects
-    const fills = response.data.items;
-    return fills.map((fill: Fill) => {
-      return new Fill(
-        fill.symbol,
-        fill.tradeId,
-        fill.orderId,
-        fill.counterOrderId,
-        fill.side,
-        fill.liquidity,
-        fill.forceTaker,
-        fill.price,
-        fill.size,
-        fill.funds,
-        fill.fee,
-        fill.feeRate,
-        fill.feeCurrency,
-        fill.stop,
-        fill.type,
-        fill.createdAt,
-        fill.tradeType
-      );
-    });
+  
+    return cumulativeDelta;
   }
 }

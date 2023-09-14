@@ -4,9 +4,9 @@
   "description": "A tool to fetch trade histories and calculate the cumulative delta for a specific trading pair on an exchange.",
   "main": "src/index.ts",
   "scripts": {
-    "start": "node src/index.ts",
+    "start": "tsc && copyfiles -u 1 src/**/*.json dist && copyfiles -u 1 swagger.json dist && node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "tsc && copyfiles -u 1 src/**/*.json dist",
     "test": "jest",
     "lint": "eslint . --ext .ts"
   },
@@ -25,6 +25,7 @@
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "kucoin-node-sdk": "^1.0.5",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.25.0",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",

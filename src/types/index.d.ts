@@ -3,22 +3,22 @@
  */
 
 // Type for trade history
-export interface ITradeHistory {
+export type ITradeHistory = {
   id: string;
   timestamp: number;
   price: number;
   amount: number;
   side: 'buy' | 'sell';
-}
+};
 
 // Type for symbol details
-export interface ISymbolDetails {
+export type ISymbolDetails = {
   symbol: string;
   baseCurrency: string;
   quoteCurrency: string;
   feeCurrency: string;
   market: string;
-}
+};
 
 // Type for exchange service
 export interface IExchangeService {
@@ -45,3 +45,23 @@ export interface IRequestWithExchangeService extends Express.Request {
         symbol: string;
       }
 }
+
+// Type for symbol item from Kucoin API
+export type IKucoinSymbolItem = {
+  symbol: string;
+  baseCurrency: string;
+  quoteCurrency: string;
+  feeCurrency: string;
+  market: string;
+  // add other properties as needed
+};
+
+// Type for trade history item from Kucoin API
+export type IKucoinTradeHistoryItem = {
+  sequence: string;
+  time: number;
+  price: string;
+  size: string;
+  side: 'buy' | 'sell';
+  // add other properties as needed
+};

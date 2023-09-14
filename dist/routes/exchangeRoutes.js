@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const exchangeController_1 = require("../controllers/exchangeController");
+const router = (0, express_1.Router)();
+const exchangeController = new exchangeController_1.ExchangeController();
+router.get('/:exchange/symbols', exchangeController.getSymbols);
+router.get('/:exchange/trade-history/:symbol', exchangeController.getTradeHistory);
+router.get('/:exchange/cumulative-delta/:symbol', exchangeController.getCumulativeDelta);
+exports.default = router;

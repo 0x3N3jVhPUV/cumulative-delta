@@ -12,8 +12,14 @@ const port = process.env.PORT || 3000;
 // `app.use(express.json())` **before** your routes!
 app.use(express.json());
 
+// Set Content Security Policy
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self' https://openapi-sandbox.kucoin.com; font-src 'self' data:;");
+  next();
+});
+
 // Swagger setup
-const swaggerDocument = require('../swagger.json');
+const swaggerDocument = require('./swagger.json');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes

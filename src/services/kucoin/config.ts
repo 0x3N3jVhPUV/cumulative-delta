@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // Base URL for the Kucoin API
   baseUrl: "https://openapi-sandbox.kucoin.com",
 
