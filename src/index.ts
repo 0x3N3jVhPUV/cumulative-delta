@@ -1,38 +1,44 @@
-import express from 'express';
-import swaggerUi from 'swagger-ui-express';
-import exchangeRoutes from './routes/exchangeRoutes';
-import * as dotenv from 'dotenv';
+import express from "express";
+import Controller from "./interfaces/controller.interface";
+import * as swaggerUi from "swagger-ui-express";
+import * as YAML from "yamljs";
+import * as path from "path";
+import { ExchangeController } from './controllers/exchangeController';
 
-dotenv.config();
+class App {
+  public app: express.Application;
 
-const app = express();
-const port = process.env.PORT || 3000;
+  constructor(controllers: Controller[]) {
+    this.app = express();
 
-// Parse JSON bodies for this app. Make sure you put
-// `app.use(express.json())` **before** your routes!
-app.use(express.json());
+    this.initializeControllers(controllers);
+    this.initializeSwagger();
+  }
 
-// Set Content Security Policy
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self' https://openapi-sandbox.kucoin.com; font-src 'self' data:;");
-  next();
-});
+  private initializeControllers(controllers: Controller[]) {
+    controllers.forEach((controller) => {
+      this.app.use("/", controller.router);
+    });
+  }
 
-// Swagger setup
-const swaggerDocument = require('./swagger.json');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  private initializeSwagger() {
+    const swaggerFilePath = path.resolve(__dirname, "../swagger.yaml");
+    const swaggerDocument = YAML.load(swaggerFilePath);
 
-// Routes
-app.use('/exchange', exchangeRoutes);
+    this.app.use("/api-docs", swaggerUi.serve);
+    this.app.get("/api-docs", swaggerUi.setup(swaggerDocument));
+  }
 
-// Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+  public listen() {
+    this.app.listen(process.env.PORT, () => {
+      console.log(`App listening on port ${process.env.PORT}`);
+    });
+  }
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+  public getServer() {
+    return this.app;
+  }
+}
 
-export default app;
+const app = new App([new ExchangeController()]);
+app.listen();
