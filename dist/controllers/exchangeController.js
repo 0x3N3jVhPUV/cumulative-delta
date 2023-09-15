@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExchangeController = void 0;
-const apiFactory_1 = require("../services/apiFactory");
-const express_1 = require("express");
-class ExchangeController {
+import { apiFactory } from '../services/apiFactory';
+import { Router } from 'express';
+export class ExchangeController {
     constructor() {
-        this.router = (0, express_1.Router)();
+        this.router = Router();
         this.getSymbols = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const exchangeService = this.apiFactory.createExchangeService(req.params.exchange);
             const symbols = yield exchangeService.getSymbols();
@@ -30,7 +27,7 @@ class ExchangeController {
             const cumulativeDelta = yield exchangeService.getCumulativeDelta(req.params.symbol);
             res.json({ cumulativeDelta });
         });
-        this.apiFactory = apiFactory_1.apiFactory;
+        this.apiFactory = apiFactory;
         this.initializeRoutes();
     }
     initializeRoutes() {
@@ -39,4 +36,4 @@ class ExchangeController {
         this.router.get('/:exchange/cumulative-delta/:symbol', this.getCumulativeDelta);
     }
 }
-exports.ExchangeController = ExchangeController;
+//# sourceMappingURL=exchangeController.js.map

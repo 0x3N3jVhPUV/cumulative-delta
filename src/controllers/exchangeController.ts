@@ -9,7 +9,7 @@ export class ExchangeController {
 
   constructor() {
     this.apiFactory = apiFactory;
-    this.initializeRoutes();
+    // this.initializeRoutes();
   }
   
   private initializeRoutes() {

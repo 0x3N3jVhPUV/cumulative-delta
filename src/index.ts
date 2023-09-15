@@ -1,45 +1,29 @@
 import express from "express";
-import Controller from "./interfaces/controller.interface";
-import * as swaggerUi from "swagger-ui-express";
-import * as YAML from "yamljs";
-import * as path from "path";
-import { ExchangeController } from './controllers/exchangeController';
+import exchangeRoutes from './routes/exchangeRoutes';
+import * as dotenv from 'dotenv';
+import helmet from 'helmet';
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Parse JSON bodies for this app. Make sure you put
+// `app.use(express.json())` **before** your routes!
+app.use(express.json());
+
+// Routes
+app.use('/exchange', exchangeRoutes);
+
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 
-export class App {
-  public app: express.Application;
-
-  constructor(controllers: Controller[]) {
-    this.app = express();
-
-    this.initializeControllers(controllers);
-    this.initializeSwagger();
-  }
-
-  private initializeControllers(controllers: Controller[]) {
-    controllers.forEach((controller) => {
-      this.app.use("/", controller.router);
-    });
-  }
-
-  private initializeSwagger() {
-    const swaggerFilePath = path.resolve(__dirname, "./swagger.yaml");
-    const swaggerDocument = YAML.load(swaggerFilePath);
-
-    this.app.use("/api-docs", swaggerUi.serve);
-    this.app.get("/api-docs", swaggerUi.setup(swaggerDocument));
-  }
-
-  public listen() {
-    this.app.listen(process.env.PORT, () => {
-      console.log(`App listening on port ${process.env.PORT}`);
-    });
-  }
-
-  public getServer() {
-    return this.app;
-  }
-}
-
-const app = new App([new ExchangeController()]);
-app.listen();
+export default app;

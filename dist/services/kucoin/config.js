@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+export default {
     // Base URL for the Kucoin API
     baseUrl: "https://openapi-sandbox.kucoin.com",
     // API authentication credentials
@@ -12,3 +10,4 @@ exports.default = {
     // API authentication version
     authVersion: 2, // KC-API-KEY-VERSION. Notice: for v2 API-KEY, not required for v1 version.
 };
+//# sourceMappingURL=config.js.map
