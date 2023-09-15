@@ -1,7 +1,6 @@
 import express from "express";
 import exchangeRoutes from './routes/exchangeRoutes';
 import * as dotenv from 'dotenv';
-import helmet from 'helmet';
 
 dotenv.config();
 
