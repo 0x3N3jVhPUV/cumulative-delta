@@ -101,5 +101,5 @@ This project is licensed under the ISC License.
 
 ## Author
 
-- Andy AFENE - [andyafene@gmail.com](mailto:andyafene@gmail.com)
+- Andy AFENE
 
