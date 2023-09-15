@@ -1,4 +1,3 @@
-
 # Cumulative Delta Calculator
 
 ## Description
