@@ -26,32 +26,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.App = void 0;
 const express_1 = __importDefault(require("express"));
-const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-const exchangeRoutes_1 = __importDefault(require("./routes/exchangeRoutes"));
-const dotenv = __importStar(require("dotenv"));
-dotenv.config();
-const app = (0, express_1.default)();
-const port = process.env.PORT || 3000;
-// Parse JSON bodies for this app. Make sure you put
-// `app.use(express.json())` **before** your routes!
-app.use(express_1.default.json());
-// Set Content Security Policy
-app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", "default-src 'self' https://openapi-sandbox.kucoin.com; font-src 'self' data:;");
-    next();
-});
-// Swagger setup
-const swaggerDocument = require('./swagger.json');
-app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
-// Routes
-app.use('/exchange', exchangeRoutes_1.default);
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
-exports.default = app;
+const swaggerUi = __importStar(require("swagger-ui-express"));
+const YAML = __importStar(require("yamljs"));
+const path = __importStar(require("path"));
+const exchangeController_1 = require("./controllers/exchangeController");
+class App {
+    constructor(controllers) {
+        this.app = (0, express_1.default)();
+        this.initializeControllers(controllers);
+        this.initializeSwagger();
+    }
+    initializeControllers(controllers) {
+        controllers.forEach((controller) => {
+            this.app.use("/", controller.router);
+        });
+    }
+    initializeSwagger() {
+        const swaggerFilePath = path.resolve(__dirname, "./swagger.yaml");
+        const swaggerDocument = YAML.load(swaggerFilePath);
+        this.app.use("/api-docs", swaggerUi.serve);
+        this.app.get("/api-docs", swaggerUi.setup(swaggerDocument));
+    }
+    listen() {
+        this.app.listen(process.env.PORT, () => {
+            console.log(`App listening on port ${process.env.PORT}`);
+        });
+    }
+    getServer() {
+        return this.app;
+    }
+}
+exports.App = App;
+const app = new App([new exchangeController_1.ExchangeController()]);
+app.listen();

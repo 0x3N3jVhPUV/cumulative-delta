@@ -11,8 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExchangeController = void 0;
 const apiFactory_1 = require("../services/apiFactory");
+const express_1 = require("express");
 class ExchangeController {
     constructor() {
+        this.router = (0, express_1.Router)();
         this.getSymbols = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const exchangeService = this.apiFactory.createExchangeService(req.params.exchange);
             const symbols = yield exchangeService.getSymbols();
@@ -29,6 +31,12 @@ class ExchangeController {
             res.json({ cumulativeDelta });
         });
         this.apiFactory = apiFactory_1.apiFactory;
+        this.initializeRoutes();
+    }
+    initializeRoutes() {
+        this.router.get('/:exchange/symbols', this.getSymbols);
+        this.router.get('/:exchange/trade-history/:symbol', this.getTradeHistory);
+        this.router.get('/:exchange/cumulative-delta/:symbol', this.getCumulativeDelta);
     }
 }
 exports.ExchangeController = ExchangeController;

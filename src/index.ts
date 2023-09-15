@@ -5,7 +5,8 @@ import * as YAML from "yamljs";
 import * as path from "path";
 import { ExchangeController } from './controllers/exchangeController';
 
-class App {
+
+export class App {
   public app: express.Application;
 
   constructor(controllers: Controller[]) {
@@ -22,7 +23,7 @@ class App {
   }
 
   private initializeSwagger() {
-    const swaggerFilePath = path.resolve(__dirname, "../swagger.yaml");
+    const swaggerFilePath = path.resolve(__dirname, "./swagger.yaml");
     const swaggerDocument = YAML.load(swaggerFilePath);
 
     this.app.use("/api-docs", swaggerUi.serve);

@@ -11,6 +11,6 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots" : ["node_modules/@types", "custom_types"]
   },
-  "include": ["src/**/*.ts", "types/**/*"],
+  "include": ["src/**/*.ts", "types/**/*", "swagger.yaml"],
   "exclude": ["node_modules"]
 }
