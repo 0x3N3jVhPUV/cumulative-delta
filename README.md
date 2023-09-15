@@ -58,9 +58,25 @@ docker build -t cumulative-delta .
 
 The application provides the following API endpoints:
 
-- GET `/exchange/:exchange/symbols`: Get a list of symbols available on the specified exchange.
-- GET `/exchange/:exchange/trade-history/:symbol`: Get the trade history for the specified symbol on the specified exchange.
-- GET `/exchange/:exchange/cumulative-delta/:symbol`: Calculate the cumulative delta for the specified symbol on the specified exchange.
+- **GET /exchange/:exchange/symbols**
+
+  Get a list of symbols available on the specified exchange.
+
+  Example: `GET /exchange/kucoin/symbols`
+
+- **GET /exchange/:exchange/trade-history/:symbol**
+
+  Get the trade history for the specified symbol on the specified exchange.
+
+  Example: `GET /exchange/kucoin/trade-history/BTC-USDT`
+
+- **GET /exchange/:exchange/cumulative-delta/:symbol**
+
+  Calculate the cumulative delta for the specified symbol on the specified exchange.
+
+  Example: `GET /exchange/kucoin/cumulative-delta/BTC-USDT`
+
+Replace `:exchange` with the name of the exchange (e.g., kucoin) and `:symbol` with the trading pair symbol (e.g., BTC-USDT) in the endpoint URLs.
 
 ## Testing
 
