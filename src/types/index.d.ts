@@ -42,7 +42,7 @@ export interface IError {
 export interface IRequestWithExchangeService extends Express.Request {
     params: {
         exchange: string;
-        symbol: string;
+        symbol?: string;
       }
 }
 

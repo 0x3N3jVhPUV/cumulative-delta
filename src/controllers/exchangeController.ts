@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { IApiFactory, IRequestWithExchangeService } from '../types';
-import { apiFactory } from '../services/apiFactory';
+import { ApiFactory } from '../services/apiFactory';
 import { Router } from 'express';
 
 export class ExchangeController {
@@ -8,8 +8,7 @@ export class ExchangeController {
   public router = Router();
 
   constructor() {
-    this.apiFactory = apiFactory;
-    // this.initializeRoutes();
+    this.apiFactory = new ApiFactory();
   }
   
   private initializeRoutes() {

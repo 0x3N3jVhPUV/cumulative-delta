@@ -1,7 +1,7 @@
 import { IApiFactory, IExchangeService } from '../types';
 import { KucoinService } from './kucoin/kucoinService';
 
-class ApiFactory implements IApiFactory {
+export class ApiFactory implements IApiFactory {
   createExchangeService(exchange: string): IExchangeService {
     switch (exchange) {
       case 'kucoin':
@@ -13,6 +13,6 @@ class ApiFactory implements IApiFactory {
   }
 }
 
-export const apiFactory = new ApiFactory();
+// export const apiFactory = new ApiFactory();
 
 
