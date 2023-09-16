@@ -4,7 +4,8 @@
   "description": "A tool to fetch trade histories and calculate the cumulative delta for a specific trading pair on an exchange.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "coverage": "jest --coverage",
     "build": "tsc",
     "start": "ts-node ./src/index.ts"
   },
@@ -27,9 +28,14 @@
     "@types/axios": "^0.14.0",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.5",
+    "@types/supertest": "^2.0.12",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.3",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.5",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
