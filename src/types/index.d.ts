@@ -1,15 +1,3 @@
-export interface IRequestWithExchangeService extends Request {
-    exchangeService: IExchangeService;
-    params: {
-      exchange: string;
-      symbol: string;
-    };
-    cache: any; // replace 'any' with the actual type
-    credentials: any; // replace 'any' with the actual type
-    destination: any; // replace 'any' with the actual type
-    // Add other properties as needed
-  }
-
 export interface IExchangeService {
     getSymbols(): Promise<ISymbolDetails[]>;
     getTradeHistory(symbol: string): Promise<ITradeHistory[]>;
